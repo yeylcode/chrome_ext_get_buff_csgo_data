@@ -1,0 +1,2 @@
+# chrome_ext_get_buff_csgo_data
+通过chrome扩展程序在自己的页面无视跨域获取网易buff中csgo饰品数据
