@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .csgo {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .csgo li {
+            list-style: none;
+            background-color: #f9f9f9;
+            border: 1px solid #e4e4e4;
+            float: left;
+            margin: 0 25px 20px 0;
+            position: relative;
+            padding-bottom: 9px;
+            width: 208px;
+            background: #f9f9f9;
+            border-radius: 2px;
+            box-shadow: 0 0 4px 0 rgba(149, 149, 149, .3);
+        }
+
+        .csgo li a img {
+            background-color: #e4e4e4;
+        }
+
+        .csgo li h3 a {
+            font-size: 12px;
+            color: #333;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 本页面是测试用，和扩展程序无关 -->
+    <button id="btn_get">获取饰品数据</button>
+    <ul class="csgo" id="buff_list"> </ul>
+
+    <p>
+        分页： <span id="page"></span>
+    </p>
+    <p>
+        本页面用http-server 启动个web服务后直接访问就行，我本地地址是 http://172.16.0.161:8080，你在测试时可能是192.xxx.xxx.xx，要替换成你自己的地址
+        <br>
+        每次获取的数据都不一样，这是因为buff网站每次返回的都不一样，不是bug
+    </p>
+    <script>
+        function initHtml(result) {
+            console.log('获取的结果数据:', result);
+            let buff_list = document.getElementById('buff_list');
+            buff_list.innerHTML = '';
+            let goods = result.items
+            let pageOpt = {
+                page: result.page_num,
+                page_size: result.page_size,
+                total_count: result.total_count
+            }
+            document.getElementById('page').innerHTML = JSON.stringify(pageOpt);
+            goods.forEach(e => {
+
+                buff_list.innerHTML += `
+                                        <li>
+                                            <a>
+                                                <img class="lazy" src="${e.goods_info.icon_url}"
+                                                width="210" height="138">
+                                            </a>
+                                            <h3><a>${e.name} </a></h3>
+                                            <p>
+                                                <strong class="f_Strong">¥ ${e.sell_min_price}</strong>
+                                                <span class="l_Right f_12px f_Bold c_Gray"> ${e.sell_num}件在售 </span>
+                                            </p>
+
+                                        </li>
+              `
+            })
+        }
+        //流程6 结束 接受消息，获取到需要的数据
+        window.addEventListener("message", (event) => {
+            if (event.data.code == '获取的结果数据') {
+                initHtml(event.data.data.response.data)
+            }
+        });
+
+        let btn_get = document.getElementById('btn_get')
+        btn_get.onclick = function () {
+            //流程1 开始 发生消息，要获取什么数据
+            let message = { params1: "自定义参数", action: "去获取buff列表数据" }//消息体，可以是一个字符串、数字、对象或数组，表示要传递的数据。
+            let targetOrigin = "http://172.16.0.161:8080" //只向这个域名:端口发送消息
+            window.postMessage(message, targetOrigin)
+        }
+
+    </script>
+</body>
+
+</html>

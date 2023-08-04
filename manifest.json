@@ -1,0 +1,33 @@
+{
+  "name": "获取第三方接口数据",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "获取第三方接口数据",
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "css": ["css/css.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "permissions": [
+    "scripting",
+    "cookies",
+    "contextMenus",
+    "tabs",
+    "notifications",
+    "webRequest",
+    "declarativeNetRequest",
+    "storage"
+  ],
+  "host_permissions": ["<all_urls>"]
+}
